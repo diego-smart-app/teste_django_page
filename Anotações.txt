@@ -44,27 +44,27 @@ Nesse arquivo é necessário definir o APP (ou parte do projeto) criado
 Na parte INSTALLED_APPS inclua: 'parte_proj',
 
 Voltando ao arquivo models.py, crie a classe
-class MinhaClasse(models.Model):
+class Topico(models.Model):
 	"""Um assunto sobre a parte do projeto, abaixo os dados da
-	tabela MinhaClasse no DB"""
+	tabela Topico no DB"""
 	text = models.CharField(max_length=200) //Texto com max 200 caractere
 	date_added = models.DateTimeField(auto_now_add=True) //Data e hora atualizada
 
-	//Crie o método
+	#Crie o método
 	def __str__(self):
 		"""Devolve uma representação em string do modelo"""
 		return self.text
 
 No terminal deve ser dado comando da tabela criada acima
 No venv digite: python .\manage.py makemigrations parte_proj
-Deve apresentar que criou o modelo: - Create model MinhaClasse
+Deve apresentar que criou o modelo: - Create model Topico
 
 O seguinte arquivo também foi criado na pasta migrations:
 0001_initial.py
 MAS... Ainda não é a tabela
 Digite no venv, terminal: python .\manage.py migrate
-Agora a tabela: MinhaClasse
-Foi criada chamada: parte_proj_MinhaClasse
+Agora a tabela: Topico
+Foi criada chamada: parte_proj_Topico
 Nessa tabela estão os campos que foram criados nas linhas anteriores
 
 Criando um usuário e senha para o servidor
@@ -75,3 +75,54 @@ Digite: python .\manage.py runserver
 Depois segure Ctrl e clique no link para abrir na web
 Edite o link no navegador colocando /admin
 Entre com usuário e senha feito anteriormente
+Na tela que abre existe tabelas padrões, mas não aparece a tabela que foi criada anteriormente
+Para resolver isso, na pasta parte_proj precisamos abrir o arquivo admin.py
+Nesse arquivo precisamos importar os modelos criados
+Logo depois da linha:
+# Register your models here.
+Só vão aparecer na tela os que forem importados neste arquivo
+Para isso digite:
+	from parte_proj.models import Topico
+	admin.site.register(Topico)
+Após fazer isso a tela aberta no login do Django já aparece a tabela criada (atualize a página para aparecer)
+Lá é possível adicionar ou deletar itens da tabela
+
+Agora vamos adicionar um campo do tópico criado para fazer as anotações (tabelas relacionais)
+No arquivo models.py, devemos criar mais uma classe, seguindo o exemplo:
+    
+    class Entry(models.Model):
+    """Algo específico aprendido sobre o assunto"""
+    #Chave estrangeira, já o on_delete faz com que todas anotações sejam excluídas a partir do momento quese exclui o tópico relacionado.
+    #Leia mais em: doc.djangoproject.com/en/2.2/ref/models/fields/#arguments
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    text = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
+    
+    #Classe somente para resolver o problema do ingles da palavra entry, #caso não fosse feita, ao usar em plural ficaria entrys
+    class Meta:
+        verbose_name_plural = 'entries'
+        
+    def __str__(self):
+        """Devolve uma representação em string do modelo."""
+        #Apresenta até as 50 primeiros caracteres e a reticências
+        return self.text[:50] + '...'
+
+Depois em outra aba do terminal (no ambiente virtual ativado) digite:
+python .manage.py makemigrations parte_proj
+
+E depois:
+python .\manage.py migrate
+
+Repare que na tela do django admin ainda não está o Entry
+Para isso enre no arquivo admin.py e faça:
+	from parte_proj.models import Entry
+	admin.site.register(Entry)
+Então o Entry aparece na tela (depois de atualizar F5)
+
+Como exemplo crie alguns tópicos (Xadrez, Programação por exemplo) e salve
+Agora quando for criar uma entrada, selecione o tópico relacionado
+Adicione mais uma entrada (Use o tópico programação agora)
+Depois destes tópicos adicionados, ao tentar excluir algum tópico, a tela mostra quais entradas estão relacionadas ao tópico
+Com isto as entradas relacionadas serão excluídas
+
+
