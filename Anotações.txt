@@ -1,0 +1,77 @@
+Crie uma pasta com o nome do seu projeto proj por exemplo
+Crie um ambiente virtual
+	Abrir a pasta no VSCODE, abrir terminal, digitar: python -m venv proj_env
+Ative o ambiente virtual criado (para sair do venv basta digitar deactivate)
+	No terminal digite: . proj_env/Scripts/activate
+Todos comando para o projeto precisa ativar o ambiente virtual
+Instalar o Django
+	digitar: pip install Django
+Criar um projeto Django
+	digitar: django-admin startproject proj .
+Arquivos importantes dentro da pasta proj:
+settings.py Configurações do projeto
+urls.py Indica qual link para acessar o admin a partir da hospedagem (/admin exemplo)
+wsgi.py Ajuda a servir os arquivos criados (web server gateway interface)
+
+Em settings.py também qual tipo de banco de dados será usado em DATABASES,
+o padrão é sqlite3
+
+Criando um banco de dados
+No ambiente virtual digite: python manage.py migrate
+É possível verificar o runserver criado
+Digite: python .\manage.py runserver
+Depois segure Ctrl e clique no link para abrir na web
+Baixe o editor de banco de dados do sqlite para vizualizar, baixe em DB browser no google
+Depois de instalar é possível verificar o DB criado, com o nome: db.sqlite3
+
+Para cada parte do projeto, onde usa uma tabela por exemplo do banco de dados
+é denominado de APP
+
+Ative o ambiente virtual para as edições
+Digite: . proj_env/Scripts/activate
+Crie uma parte do projeto, digite no terminal: python .\manage.py startapp parte_proj
+Observe que a pasta parte_proj foi criada
+Dentro desta pasta estão 3 pastas importantes:
+admin.py
+models.py
+views.py
+
+Em models.py logo depois de #Create your models here.
+(Os comandos valem pra qualquer banco de dados, seja sqlite3, mysql, etc)
+
+Abra o arquivo settings.py da primeira pasta
+Nesse arquivo é necessário definir o APP (ou parte do projeto) criado
+Na parte INSTALLED_APPS inclua: 'parte_proj',
+
+Voltando ao arquivo models.py, crie a classe
+class MinhaClasse(models.Model):
+	"""Um assunto sobre a parte do projeto, abaixo os dados da
+	tabela MinhaClasse no DB"""
+	text = models.CharField(max_length=200) //Texto com max 200 caractere
+	date_added = models.DateTimeField(auto_now_add=True) //Data e hora atualizada
+
+	//Crie o método
+	def __str__(self):
+		"""Devolve uma representação em string do modelo"""
+		return self.text
+
+No terminal deve ser dado comando da tabela criada acima
+No venv digite: python .\manage.py makemigrations parte_proj
+Deve apresentar que criou o modelo: - Create model MinhaClasse
+
+O seguinte arquivo também foi criado na pasta migrations:
+0001_initial.py
+MAS... Ainda não é a tabela
+Digite no venv, terminal: python .\manage.py migrate
+Agora a tabela: MinhaClasse
+Foi criada chamada: parte_proj_MinhaClasse
+Nessa tabela estão os campos que foram criados nas linhas anteriores
+
+Criando um usuário e senha para o servidor
+No terminal e venv digite: python.\manage.py createsuperuser
+Escolha um Username e uma Password
+Entre no webserver
+Digite: python .\manage.py runserver
+Depois segure Ctrl e clique no link para abrir na web
+Edite o link no navegador colocando /admin
+Entre com usuário e senha feito anteriormente
