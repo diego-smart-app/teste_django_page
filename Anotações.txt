@@ -125,4 +125,95 @@ Adicione mais uma entrada (Use o tópico programação agora)
 Depois destes tópicos adicionados, ao tentar excluir algum tópico, a tela mostra quais entradas estão relacionadas ao tópico
 Com isto as entradas relacionadas serão excluídas
 
+#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#
+SHELL DO DJANGO
+
+Através da shell, é possível testar os modelos criados
+Levando em consideração que você não precisa entrar na pagina de login
+Na verdade é só uma outra maneira de testar
+Os primeiros passos são iguais
+Entrar no ambiente virtual através do terminal
+Depois digitar os comandos, o primeiro é pra entrar no modo shell
+A seguir, qual parte do projeto (ou APP) você deseja testar
+No exemplo das linhas digitadas, aparece quais tópicos estão registrados no DB
+Ou seja ele retorna uma QuerySet
+python .\manage.py shell
+from parte_proj.models import Topic
+Topic.objects.all()
+# No comando a seguir o objeto Topic foi passado para a variável topics
+# Com isso podemos manipular com laços de ieração (for por exemplo)
+topics = Topic.objects.all()
+for topic in topics:
+	print(topic.id, topic) # Não esqueca de usar identação
+# Comando de enter novamente para aparecer
+2 Xadrez
+3 Programação
+
+# Pegando apenas um tópico usando o id ID
+t = Topic.objects.get(id=2)
+t.text
+'Xadrez'
+t.date_added
+datetime.datetime(2025, 4, 11, 17, 37, 49, 21639, tzinfo=datetime.timezone.utc)
+
+t.entry_set.all()
+<QuerySet [<Entry: Abertura gambito da Dama é com o peão da dama....>]>
+
+# Saindo do modo SHELL
+exit()
+
+
+#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#
+INICIANDO O PROJETO DA PÁGINA EM HTML
+
+No arquivo urls.py temos algumas informações importantes
+from django.contrib import admin #Por exemplo, indica o local do painel admin
+from django.urls import path #Indica o caminho
+urlpatterns = [
+    path('admin/', admin.site.urls), 	#Indica em qual url está o admin
+]
+
+UMA OBSERVAÇÃO IMPORTANTE
+Quando fazemos o comando
+Digite: python .\manage.py runserver
+Depois segure Ctrl e clique no link para abrir na web
+Conforme indicado aulas atrás, entra numa tela criado pelo Django, mas
+Precisamos criar nossa página principal "index.html"
+Para isso modificamos:
+from django.urls import path
+#Para:
+from django.urls import path, include
+
+E também incluimos em:
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('parte_proj.urls')) #Linha incluída
+]
+
+As modificações feitas são no arquivo urls.py, feito isso este arquivo pode ser fechado
+O arquivo urls.py fica na pasta proj e precisa copiar e colar na pasta parte_proj
+E então editamos ele
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index),
+]
+
+A partir deste momento temos que editar o arquivo view.py que está na mesma pasta:
+from django.shortcuts import render
+
+# Create your views here.
+def index(request):
+    """Página principal do projeto"""
+    return render(request, 'parte_proj/index.html') #Esse comando procura o caminho dentro da pasta template criado a seguir
+A seguir crie uma página chamada template dentro de parte_proj
+Na pasta templates estarão as subpastas com as partes do projeto
+Então fica
+parte_proj/templates/parte_proj
+Seguindo este caminho, estarão as páginas em html
+
+Depois, ao criar o arquivo index conforme pasta citada, ao rodar o comando de runserver, a página estará disponível
+
 
