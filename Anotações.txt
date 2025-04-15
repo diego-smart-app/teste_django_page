@@ -217,3 +217,36 @@ Seguindo este caminho, estarão as páginas em html
 Depois, ao criar o arquivo index conforme pasta citada, ao rodar o comando de runserver, a página estará disponível
 
 
+#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#
+HERANÇA E APROVEITAMENTO DE PÁGINAS CRIADAS
+
+Na aula anterior foi criado o index.html (pra teste)
+Mas agora precisamos criar o base.html
+Observe o arquivo base (usando a tag de template {% %} ):
+<a href="{%url 'index' %}">
+    <h1>Learning Log</h1>
+</a>
+
+{% block content %}{% endblock content %}
+
+Agora o arquivo index:
+{% extends "parte_proj/base.html" %}
+
+{% block content %}
+    <p>Essa aplicação te ajudará a organizar seus estudos</p>
+{% endblock content %}
+
+Mas pra isso funcionar precisa editar o arquivo urls.py:
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+
+#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#
+ENTENDENDO MELHOR O BLOCK E UTILIZANDO UM for DENTRO DA PÁGINA
+
+
+
