@@ -248,5 +248,47 @@ urlpatterns = [
 #--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#--#
 ENTENDENDO MELHOR O BLOCK E UTILIZANDO UM for DENTRO DA PÁGINA
 
+Acesse o urls.py dentro da pasta parte_proj e altere para:
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('topics', views.topics, name='topics'),
+]
+
+Já em views.py:
+from django.shortcuts import render
+from .models import Topic		#Importar Topic
+
+# Create your views here.
+def index(request):
+    """Página principal do learning_log"""
+    return render(request, 'learning_logs/index.html')
+
+def topics(requests):			#Nova função criada
+    """Mostra todos os assuntos"""
+    topics = Topic.objects.order_by('date_added') #Pega no banco de dados e ordena por ordem e coloca na variável topics
+    context = {'topics': topics} #Variável context recebe um dicionário pela variável topics, a variável context será usada na página web
+    return render(request, 'learning_logs/topics.html', context)
+
+Depois entra na pasta templates/parte_proj e crie o arquivo topics.html:
+{% extends "learning_logs/base.html" %}		//Herda o conteúdo base
+
+{% block content %}	//Começa o conteúdo desta página
+    
+    <ul>		//Uma lista em html
+        {% for topic in topics %}	//Código python para listar os tópicos
+        <li>{{ topic }}</li>		//Cada variável topic é adicionada no item da lista a vada iteração
+        {% empty %}			//Caso não haja itens, exibe a mensagem abaixo
+            <li>Não há tópicos adicionados.</li>
+        {% endfor %}			//Indica o fim do código for
+    </ul>
+
+{% endblock content %}	//Termina o conteúdo desta página
+
+
+
 
 
