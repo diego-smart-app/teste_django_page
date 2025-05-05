@@ -39,7 +39,7 @@ def new_topic(request):
 
 def new_entry(request, topic_id):
     """Acrescenta uma nova entrada para um assunto em particular."""
-    topic = Topic.objects.get(id=topic_id)
+    topic = Topic.objects.get(id  =topic_id)
     
     if request.method != 'POST':
         #Nenhum dado submetido; cria um formulário em branco
@@ -52,6 +52,7 @@ def new_entry(request, topic_id):
             new_entry.topic = topic
             new_entry.save()
             return HttpResponseRedirect(reverse('topic', args=[topic_id]))
+        
     context = {'topic': topic, 'form': form}
     return render(request, 'learning_logs/new_entry.html', context)
     
